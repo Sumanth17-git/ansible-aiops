@@ -1,5 +1,7 @@
 - name: Resolve OOM issue
   hosts: all
   become: true
+  vars:
+    target_process: buggyApp.jar
   roles:
     - oom_resolver
