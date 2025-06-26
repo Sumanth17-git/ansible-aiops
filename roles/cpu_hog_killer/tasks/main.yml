@@ -1,8 +1,10 @@
-- name: Kill top CPU-consuming process
-  shell: |
-    top -b -o +%CPU | head -n 12 | tail -n 1 | awk '{print $1}' | xargs kill -9
-  register: cpu_kill
-  ignore_errors: yes
+- name: Check Top CPU process
+  shell: "ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -n 6"
+  register: cpu_report
+  
+- name: Kill top CPU process
+  shell: "kill -9 $(ps -eo pid,%cpu --sort=-%cpu | awk 'NR==2{print $1}')"
+  when: cpu_report.stdout_lines[1] is defined
 
 - name: Log killed PID
   debug:
