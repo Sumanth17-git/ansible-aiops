@@ -1,0 +1,5 @@
+- name: Resolve OOM issue
+  hosts: all
+  become: true
+  roles:
+    - oom_resolver

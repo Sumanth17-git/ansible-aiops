@@ -1,0 +1,9 @@
+- name: Kill top memory-consuming process
+  shell: |
+    ps -eo pid,pmem --sort=-pmem | awk 'NR==2 {print $1}' | xargs kill -9
+  register: mem_kill
+  ignore_errors: yes
+
+- name: Log killed PID
+  debug:
+    msg: "Killed top memory hog process: {{ mem_kill.stdout }}"

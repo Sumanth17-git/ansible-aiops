@@ -1,0 +1,14 @@
+- name: Find old files
+  find:
+    paths: "{{ item.path }}"
+    age: "{{ item.age }}d"
+    recurse: yes
+  register: old_files
+  loop: "{{ cleanup_paths }}"
+
+- name: Delete old files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ old_files.results | map(attribute='files') | list | flatten(levels=1) }}"
+  when: old_files.results | length > 0

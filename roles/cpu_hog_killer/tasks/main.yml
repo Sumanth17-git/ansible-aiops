@@ -1,0 +1,9 @@
+- name: Kill top CPU-consuming process
+  shell: |
+    top -b -o +%CPU | head -n 12 | tail -n 1 | awk '{print $1}' | xargs kill -9
+  register: cpu_kill
+  ignore_errors: yes
+
+- name: Log killed PID
+  debug:
+    msg: "Killed top CPU hog process: {{ cpu_kill.stdout }}"

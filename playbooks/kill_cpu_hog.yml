@@ -1,0 +1,5 @@
+- name: Kill CPU hog
+  hosts: all
+  become: true
+  roles:
+    - cpu_hog_killer

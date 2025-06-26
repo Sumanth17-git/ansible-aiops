@@ -1,0 +1,7 @@
+- name: Restart services
+  hosts: all
+  become: true
+  vars:
+    affected_services: []
+  roles:
+    - service_restart

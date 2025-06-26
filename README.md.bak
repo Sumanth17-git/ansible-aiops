@@ -1,0 +1,32 @@
+# roles/nginx_update/files/nginx.conf
+# (This should be a valid nginx config file — provide your own or use default nginx.conf contents)
+
+# README.md
+# Ansible AIOps Project
+
+This repository automates L1 operational tasks using Ansible:
+- Disk cleanup
+- CPU hog killer
+- Out-of-memory resolver
+- Dynamic service restarts
+- Nginx config deployment with restart
+
+Each use case is modular and can be run on-demand.
+
+## Run Examples
+```bash
+# Run disk cleanup
+ansible-playbook playbooks/cleanup_disk.yml
+
+# Kill top CPU-consuming process
+ansible-playbook playbooks/kill_cpu_hog.yml
+
+# Resolve OOM issue
+ansible-playbook playbooks/resolve_oom.yml
+
+# Restart one or more services dynamically
+ansible-playbook playbooks/restart_services.yml --extra-vars='{"affected_services": ["nginx", "apache2"]}'
+
+# Update and deploy nginx config
+ansible-playbook playbooks/update_nginx.yml
+```

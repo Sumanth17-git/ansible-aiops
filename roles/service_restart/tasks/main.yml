@@ -1,0 +1,6 @@
+- name: Restart affected services
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  loop: "{{ affected_services }}"

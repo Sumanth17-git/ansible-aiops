@@ -1,0 +1,5 @@
+cleanup_paths:
+  - path: /tmp
+    age: 7
+  - path: /var/log
+    age: 14
