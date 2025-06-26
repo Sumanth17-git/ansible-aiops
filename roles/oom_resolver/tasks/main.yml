@@ -1,9 +1,28 @@
-- name: Kill top memory-consuming process
-  shell: |
-    ps -eo pid,pmem --sort=-pmem | awk 'NR==2 {print $1}' | xargs kill -9
-  register: mem_kill
+# roles/oom_resolver/tasks/main.yml
+- name: Get all Java processes with jps
+  shell: jps
+  register: jps_output
+
+- name: Find PID of the Java app (excluding jps itself)
+  set_fact:
+    java_pid: "{{ item.split()[0] }}"
+  loop: "{{ jps_output.stdout_lines }}"
+  when: item is search(target_process) and not item is search('Jps')
+
+- name: Ensure java_pid was found
+  fail:
+    msg: "Java process with name '{{ target_process }}' not found!"
+  when: java_pid is not defined
+
+- name: Take heap dump of the Java process
+  shell: "jmap -dump:format=b,file=/home/terraform17/java_heapdump_{{ java_pid }}.hprof {{ java_pid }}"
+  register: heap_result
   ignore_errors: yes
 
-- name: Log killed PID
+- name: Kill the Java process
+  shell: "kill -9 {{ java_pid }}"
+  when: heap_result.rc == 0
+
+- name: Notify that heap dump and kill are complete
   debug:
-    msg: "Killed top memory hog process: {{ mem_kill.stdout }}"
+    msg: "Heap dump saved at /home/terraform17/java_heapdump_{{ java_pid }}.hprof and process {{ java_pid }} has been killed."
